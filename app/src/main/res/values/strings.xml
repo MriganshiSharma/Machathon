@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Machathon</string>
+    <string name="click_to_speak">click to speak</string>
+    <string name="enter_item">Enter item</string>
 </resources>
