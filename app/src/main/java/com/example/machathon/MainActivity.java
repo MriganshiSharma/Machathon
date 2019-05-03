@@ -15,7 +15,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-//import android.support.v7.widget.Toolbar;
+import android.content.SharedPreferences;
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +25,11 @@ public class MainActivity extends AppCompatActivity {
     private List<ShoppingListItem> shoppingListItems = new ArrayList<>();
     private ShoppingListAdapter mAdapter;
     private EditText enterItem;
-
+    SharedPreferences sharedpreferences;
     private static final int RESULT_SPEECH = 123;
+    public static final String Name = "nameKey";
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    EditText a;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,22 +62,35 @@ public class MainActivity extends AppCompatActivity {
                 if ((i == EditorInfo.IME_ACTION_DONE) || ((keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN))) {
                     addAddedItemToList(enterItem.getText().toString());
                     enterItem.setText("");
+
+                    a=findViewById(R.id.enter_item_edit_text);
+
+
+                    sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                    String n  = a.getText().toString();
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putString(Name, n);
+                    editor.commit();
+
                 }
                 return false;
             }
         });
     }
 
-    private void addAddedItemToList(String addedItem) {
+    private void addAddedItemToList(String addedItem)
+    {
 
         ShoppingListItem shoppingListItem = new ShoppingListItem(addedItem);
         shoppingListItems.add(shoppingListItem);
 
         mAdapter.notifyDataSetChanged();
+
     }
 
 
-    private void listen() {
+    private void listen()
+    {
         if (SpeechRecognizer.isRecognitionAvailable(getApplicationContext())) {
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             startActivityForResult(intent, RESULT_SPEECH);
