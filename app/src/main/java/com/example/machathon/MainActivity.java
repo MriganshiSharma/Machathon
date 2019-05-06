@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int RESULT_SPEECH = 123;
     public static final String Name = "nameKey";
     public static final String MyPREFERENCES = "MyPrefs";
-    EditText a;
 
     @Override
     protected void onPause() {
@@ -41,13 +41,12 @@ public class MainActivity extends AppCompatActivity {
         Set<String> set = new HashSet<>(shoppingListItems);
         editor.putStringSet(Name, set);
         editor.apply();
+        shoppingListItems.clear();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        shoppingListItems.clear();
         Set<String> set = sharedpreferences.getStringSet(Name, null);
         if (set != null) {
             shoppingListItems.addAll(set);
@@ -100,15 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
         //ShoppingListItem shoppingListItem = new ShoppingListItem(addedItem);
         shoppingListItems.add(addedItem);
-
         mAdapter.notifyDataSetChanged();
-
     }
-
-    private void setDataToAdapter(ArrayList<String> shoppingList) {
-
-    }
-
 
     private void listen() {
         if (SpeechRecognizer.isRecognitionAvailable(getApplicationContext())) {
