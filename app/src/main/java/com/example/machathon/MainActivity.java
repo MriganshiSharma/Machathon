@@ -17,19 +17,44 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.SharedPreferences;
 import android.content.Context;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<ShoppingListItem> shoppingListItems = new ArrayList<>();
+    private List<String> shoppingListItems = new ArrayList<>();
     private ShoppingListAdapter mAdapter;
     private EditText enterItem;
-    SharedPreferences sharedpreferences;
+    private SharedPreferences sharedpreferences;
+    private SharedPreferences.Editor editor;
     private static final int RESULT_SPEECH = 123;
     public static final String Name = "nameKey";
-    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String MyPREFERENCES = "MyPrefs";
     EditText a;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Set<String> set = new HashSet<>(shoppingListItems);
+        editor.putStringSet(Name, set);
+        editor.apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        shoppingListItems.clear();
+        Set<String> set = sharedpreferences.getStringSet(Name, null);
+        if (set != null) {
+            shoppingListItems.addAll(set);
+        }
+
+        mAdapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        editor = sharedpreferences.edit();
+
         voiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,35 +90,27 @@ public class MainActivity extends AppCompatActivity {
                 if ((i == EditorInfo.IME_ACTION_DONE) || ((keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN))) {
                     addAddedItemToList(enterItem.getText().toString());
                     enterItem.setText("");
-
-                    a=findViewById(R.id.enter_item_edit_text);
-
-
-                    sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-                    String n  = a.getText().toString();
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putString(Name, n);
-                    editor.commit();
-
                 }
                 return false;
             }
         });
     }
 
-    private void addAddedItemToList(String addedItem)
-    {
+    private void addAddedItemToList(String addedItem) {
 
-        ShoppingListItem shoppingListItem = new ShoppingListItem(addedItem);
-        shoppingListItems.add(shoppingListItem);
+        //ShoppingListItem shoppingListItem = new ShoppingListItem(addedItem);
+        shoppingListItems.add(addedItem);
 
         mAdapter.notifyDataSetChanged();
 
     }
 
+    private void setDataToAdapter(ArrayList<String> shoppingList) {
 
-    private void listen()
-    {
+    }
+
+
+    private void listen() {
         if (SpeechRecognizer.isRecognitionAvailable(getApplicationContext())) {
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             startActivityForResult(intent, RESULT_SPEECH);

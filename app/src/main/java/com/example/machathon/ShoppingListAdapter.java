@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.MyViewHolder> {
 
-    private List<ShoppingListItem> shoppingList;
+    private List<String> shoppingList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
@@ -22,7 +22,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         }
     }
 
-    public ShoppingListAdapter(List<ShoppingListItem> shoppingList) {
+    public ShoppingListAdapter(List<String> shoppingList) {
         this.shoppingList = shoppingList;
     }
 
@@ -38,8 +38,8 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     @Override
     public void onBindViewHolder(@NonNull ShoppingListAdapter.MyViewHolder myViewHolder, int position) {
 
-        ShoppingListItem shoppingListItem = shoppingList.get(position);
-        myViewHolder.title.setText(shoppingListItem.getTitle());
+        String shoppingListItem = shoppingList.get(position);
+        myViewHolder.title.setText(shoppingListItem);
     }
 
     @Override
